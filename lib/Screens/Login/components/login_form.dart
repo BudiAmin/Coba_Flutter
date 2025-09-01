@@ -20,12 +20,12 @@ class _LoginFormState extends State<LoginForm> {
 
   Future<void> _login() async {
     try {
-      final message = await _authService.login(
+      final user = await _authService.login(
         email: _emailController.text,
         password: _passwordController.text,
       );
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(message)));
+          .showSnackBar(SnackBar(content: Text('Welcome, ${user.email}!')));
     } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(e.toString())));

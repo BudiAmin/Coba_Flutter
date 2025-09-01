@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:latihan/Models/users_model.dart';
 
 class AuthService {
   static const String baseUrl =
@@ -26,8 +27,7 @@ class AuthService {
     }
   }
 
-  Future<String> login(
-      {required String email, required String password}) async {
+  Future<User> login({required String email, required String password}) async {
     final url = Uri.parse('$baseUrl/login');
     final response = await http.post(
       url,
@@ -38,12 +38,12 @@ class AuthService {
       }),
     );
 
-    final responseData = json.decode(response.body);
-
     if (response.statusCode == 200) {
-      return responseData['message'];
+      final responseData = json.decode(response.body);
+      return User.fromJson(responseData['user']);
     } else {
+      final responseData = json.decode(response.body);
       throw Exception(responseData['message'] ?? 'Login gagal');
     }
-  }
+}
 }
