@@ -1,13 +1,36 @@
 import 'package:flutter/material.dart';
-
+import '../../../Services/auth_services.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../Signup/signup_screen.dart';
 
-class LoginForm extends StatelessWidget {
+class LoginForm extends StatefulWidget {
   const LoginForm({
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
+
+  Future<void> _login() async {
+    try {
+      final message = await _authService.login(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(message)));
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +41,7 @@ class LoginForm extends StatelessWidget {
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             cursorColor: kPrimaryColor,
+            controller: _emailController,
             onSaved: (email) {},
             decoration: const InputDecoration(
               hintText: "Your email",
@@ -33,6 +57,7 @@ class LoginForm extends StatelessWidget {
               textInputAction: TextInputAction.done,
               obscureText: true,
               cursorColor: kPrimaryColor,
+              controller: _passwordController,
               decoration: const InputDecoration(
                 hintText: "Your password",
                 prefixIcon: Padding(
@@ -44,7 +69,7 @@ class LoginForm extends StatelessWidget {
           ),
           const SizedBox(height: defaultPadding),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: _login,
             child: Text(
               "Login".toUpperCase(),
             ),
